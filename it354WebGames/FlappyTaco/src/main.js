@@ -39,7 +39,7 @@ mainState.prototype = {
         this.score = 0;
         this.labelScore = this.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
         // Add the jump sound
-        //this.jumpSound = this.game.add.audio('jump');
+        this.jumpSound = this.game.add.audio('jump');
     },
 
     update: function() {
@@ -60,7 +60,7 @@ mainState.prototype = {
         // Jump animation
         this.game.add.tween(this.taco).to({angle: -20}, 100).start();
         // Play sound
-        //this.jumpSound.play();
+        this.jumpSound.play();
     },
 
     hitlog: function() {
