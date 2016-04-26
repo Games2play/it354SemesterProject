@@ -21,6 +21,8 @@ preload.prototype = {
 		this.load.setPreloadSprite(this.asset);
 		
 		this.game.load.image("gameover", "assets/gameover.png");
+		
+		this.load.bitmapFont('flappyfont', 'assets/fonts/flappyfont/flappyfont.png', 'assets/fonts/flappyfont/flappyfont.fnt');
 	},
   	create: function(){
 		//this.background = game.add.tileSprite(0, 0, 1000, 600, "background");

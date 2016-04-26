@@ -1,0 +1,47 @@
+/* Remove the navbar's default margin-bottom and rounded borders*/
+.navbar{
+	/* background-color: #DDE8F0; */
+	margin-bottom: 0;
+	border-radius: 0;
+	padding: 15px;
+}
+
+/* Set height of the grid so .sidenav can be 100% */
+.row.content{
+	height: 800px; /* Used this as a reference*/
+}
+/* Set gray background color and 100% height */
+/* Get rid of the color and text later, just using this to center the middle portion */
+.sidenav {
+	padding-top: 20px;
+	background-color: #f1f1f1;
+	height: 100%;
+
+}
+
+footer{
+	background-color: #555;
+	color: white;
+	padding: 13px;
+}
+
+#titleName{
+	color: white;
+
+}
+
+#description{
+	color: white;
+}
+
+#foriFrame{
+	display: block;
+	text-align: center;
+	margin: 0 auto;
+}
+
+#forPingPong{
+	display: block;
+	text-align: center;
+	margin: 0 auto;
+}

@@ -1,0 +1,190 @@
+<<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Ping Pong</title>
+		
+		<style>
+			<!--Centering canvas on webpage-->
+			canvas{
+				position: absolute;
+				margin: auto;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			var width = 700, height = 600, pi= Math.PI; 
+			var upArrow = 38, downArrow = 40;
+			var canvas, ctx, keystate;
+			var player, ai, ball;
+			
+			player = {
+				x: null,
+				y: null,
+				width: 20,
+				height: 100,
+				
+				//Allow user to move up or down
+				update: function() {
+					if(keystate[upArrow]) this.y -= 7;
+					if(keystate[downArrow]) this.y +=7;
+				},
+				draw: function(){
+					ctx.fillRect(this.x, this.y, this.width, this.height);
+				}
+			};
+			ai = {
+				x: null,
+				y: null,
+				width: 20,
+				height: 100,
+				
+				update: function() {
+					//y position of y axis - paddle follows ball
+					var desty = ball.y - (this.height - ball.side)*0.5;
+					
+					//FIX THIS AI IS BEATING ME : refer to 18:38 time
+					//created this so that we can beat the ai - gives a small pause for the ai and for us to theoretically beat the ai 
+					this.y = desty;
+					this.y += (desty - this.y)*0.1; 
+				},
+				draw: function(){
+					ctx.fillRect(this.x, this.y, this.width, this.height);
+				}
+			};
+			ball = {
+				x: null,
+				y: null,
+				vel: null,
+				side: 20,
+				speed: 15,
+				
+				serve: function(side){
+					var r = Math.random();
+					this.x = side === 1 ? player.x : ai.x - this.side;
+					this.y = (height - this.side)*r;
+					
+					var phi = 0.1*pi*(1 -2*r);
+					this.vel = {
+						x: side*this.speed*Math.cos(phi),
+						y: this.speed*Math.sin(phi),
+					}
+				},
+				
+				update: function() {
+					this.x += this.vel.x;
+					this.y += this.vel.y; 
+					
+					if(this.y < 0 || this.y+this.side > height ){
+						var offset = this.vel.y < 0 ? 0 - this.y : height - (this.y+this.side);
+						this.y += 2*offset; 
+						this.vel.y *= -1;
+					}
+					
+					//when ball intersects a box/paddle (player)
+					var AABBIntersect = function(ax, ay, aw, ah, bx, by, bw, bh) {
+						return ax < bx+bw && ay < by+bh && bx < ax+aw && by < ay+ah; 
+					};
+					
+					//ball bounces off one paddle and hits the other
+					var pdle = this.vel.x < 0 ? player : ai;
+					if(AABBIntersect(pdle.x, pdle.y, pdle.width, pdle.height, this.x, this.y, this.side, this.side)){
+						this.x = pdle === player ? player.x+player.width : ai.x - this.side;
+						
+						var n = (this.y+this.side - pdle.y)/(pdle.height+this.side);
+						
+						// pi/4 = 45 --  ball gives 45 degrees angle when hit by bottom of paddle and -45 when hit by top of paddle
+						//2*n-1 is ranging from -1 to 1
+						var phi = 0.25*pi*(2*n -1); 
+						
+						//Have the ball smash into the paddles
+						var smash = Math.abs(phi) > 0.2*pi ? 1.5 : 1;
+						this.vel.x = smash*(pdle === player ? 1 : -1)*this.speed*Math.cos(phi);
+						this.vel.y = smash*this.speed*Math.sin(phi);
+						
+					}
+					
+					if(0> this.x+this.side || this.x > width){
+						//Added because if stuck in one spot, we will always beat the ai
+							this.serve(pdle === player ? 1 : -1);
+						}
+					
+				},
+				draw: function(){
+					ctx.fillRect(this.x, this.y, this.side, this.side);
+				}
+			}; 
+			
+			function main(){
+				canvas = document.createElement("canvas");
+				canvas.width = width;
+				canvas.height = height;
+				ctx = canvas.getContext("2d");
+				document.body.appendChild(canvas);
+				
+				keystate = {};
+				document.addEventListener("keydown", function(evt) {
+					keystate[evt.keyCode] = true; 
+				});
+				
+				document.addEventListener("keyup", function(evt){
+					delete keystate[evt.keyCode];
+				});
+				
+				init();
+				
+				var loop = function(){
+					update();
+					draw();
+					
+					window.requestAnimationFrame(loop, canvas);
+				};
+				window.requestAnimationFrame(loop, canvas);
+			}
+			
+			function init(){
+				player.x = player.width;
+				player.y = (height - player.height)/2;
+				
+				ai.x = width - (player.width + ai.width);
+				ai.y = (height - ai.height)/2;
+				
+				ball.serve(1);
+			}
+			
+			function update(){
+				ball.update();
+				player.update();
+				ai.update();
+			}
+			
+			function draw(){
+				ctx.fillRect(0,0, width, height);
+				
+				ctx.save();
+				ctx.fillStyle="#fff"; //The color is white
+				ball.draw();
+				player.draw();
+				ai.draw();
+				
+				var w = 4;
+				var x = (width-w)*0.5;
+				var y = 0;
+				var step = height/20; //dotted line in the middle
+				while(y < height){
+					ctx.fillRect(x, y+step*0.25, w, step*0.5);
+					y += step;
+				}
+
+				ctx.restore();
+			}
+			
+			main();
+		</script>
+	</body>
+</html>

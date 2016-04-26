@@ -78,8 +78,9 @@ mainState.prototype = {
     },
 
     restartGame: function() {
-        this.game.state.start("main");
-		//this.game.state.start("GameOver",true,false,this.score);
+        //this.game.state.start("main");
+		this.game.state.start("GameOver",true,false,this.score.toString());
+		//this.game.state.start("GameOver")
     },
 
     addOnelog: function(x, y) {
