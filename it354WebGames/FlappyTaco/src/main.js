@@ -35,6 +35,9 @@ mainState.prototype = {
 		//do something when click/space
         var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this); 
+		
+		//jump on mouse click
+		this.game.input.onDown.add(this.jump, this);
 		//score
         this.score = 0;
         this.labelScore = this.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
