@@ -3,15 +3,6 @@
 var mainState = function(game){}
 
 mainState.prototype = {
-	/*
-	preload: function() { 
-		game.load.image("background", "assets/background.png");
-        game.load.spritesheet('taco', 'assets/flying_taco_big.png', 50, 50);  
-        game.load.image('log', 'assets/log.png'); 
-        // Load the jump sound
-        game.load.audio('jump', 'assets/jump.wav');     
-    },
-	*/
 
     create: function() { 
 		this.background = this.game.add.sprite(0, 0, "background");

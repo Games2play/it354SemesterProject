@@ -18,7 +18,7 @@ gameOver.prototype = {
 		playButton.anchor.setTo(0.5,0.5);
 		
 		
-		this.scoreText = this.game.add.text(100, 180, score, { font: "30px Arial", fill: "#ffffff" });  
+		//this.scoreText = this.game.add.text(100, 180, score, { font: "30px Arial", fill: "#ffffff" });  
 		//this.scoreText = this.game.add.bitmapText(200, 180, 'flappyfont', '', 18);
 		//this.add(this.scoreText);
 		

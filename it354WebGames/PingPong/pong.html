@@ -19,7 +19,7 @@
 	<body>
 		<script>
 			var width = 700, height = 600, pi= Math.PI; 
-			var upArrow = 38, downArrow = 40;
+			var wKey = 87, sKey = 83;
 			var canvas, ctx, keystate;
 			var player, ai, ball;
 			
@@ -31,13 +31,15 @@
 				
 				//Allow user to move up or down
 				update: function() {
-					if(keystate[upArrow]) this.y -= 7;
-					if(keystate[downArrow]) this.y +=7;
+					//7 pixels
+					if(keystate[wKey]) this.y -= 7;
+					if(keystate[sKey]) this.y +=7;
 				},
 				draw: function(){
 					ctx.fillRect(this.x, this.y, this.width, this.height);
 				}
 			};
+			
 			ai = {
 				x: null,
 				y: null,
@@ -48,7 +50,7 @@
 					//y position of y axis - paddle follows ball
 					var desty = ball.y - (this.height - ball.side)*0.5;
 					
-					//FIX THIS AI IS BEATING ME : refer to 18:38 time
+					//FIX THIS AI IS BEATING ME 
 					//created this so that we can beat the ai - gives a small pause for the ai and for us to theoretically beat the ai 
 					this.y = desty;
 					this.y += (desty - this.y)*0.01; 
@@ -57,10 +59,12 @@
 					ctx.fillRect(this.x, this.y, this.width, this.height);
 				}
 			};
+			
 			ball = {
 				x: null,
 				y: null,
 				vel: null,
+				//since it is a square, only one length for width and height
 				side: 20,
 				speed: 15,
 				
@@ -77,10 +81,15 @@
 				},
 				
 				update: function() {
+					//ball moves up and down of dotted line
 					this.x += this.vel.x;
 					this.y += this.vel.y; 
 					
+					//have ball stay within the dimensions of canvas
 					if(this.y < 0 || this.y+this.side > height ){
+					
+						//if ball going upwards want to take 0 - this.y
+						//else height - (this.y + this.side)
 						var offset = this.vel.y < 0 ? 0 - this.y : height - (this.y+this.side);
 						this.y += 2*offset; 
 						this.vel.y *= -1;
@@ -121,17 +130,22 @@
 			}; 
 			
 			function main(){
+				//create <canvas> tag
 				canvas = document.createElement("canvas");
 				canvas.width = width;
 				canvas.height = height;
+				
+				//context to fill canvas with drawing graphics
 				ctx = canvas.getContext("2d");
 				document.body.appendChild(canvas);
 				
+				//to catch keystates
 				keystate = {};
 				document.addEventListener("keydown", function(evt) {
 					keystate[evt.keyCode] = true; 
 				});
 				
+				//when release a key want to delete it
 				document.addEventListener("keyup", function(evt){
 					delete keystate[evt.keyCode];
 				});
@@ -148,9 +162,12 @@
 			}
 			
 			function init(){
+				//set start position (left side of canvas)
 				player.x = player.width;
+				//y position of center of canvas
 				player.y = (height - player.height)/2;
 				
+				//offset to right side by player and width
 				ai.x = width - (player.width + ai.width);
 				ai.y = (height - ai.height)/2;
 				
@@ -164,10 +181,17 @@
 			}
 			
 			function draw(){
+				/*contet.fillRect(x,y,width,height);
+				  x : x-coord of upper-left corner of rect
+				  y : y-coord of upper left corner of rect
+				  width  : width of rect in pixels
+				  height : height of rect in pixels
+				*/				
 				ctx.fillRect(0,0, width, height);
 				
 				ctx.save();
 				ctx.fillStyle="#fff"; //The color is white
+				
 				ball.draw();
 				player.draw();
 				ai.draw();
